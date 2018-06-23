@@ -15,15 +15,35 @@ export class HomePage {
 
   onChoose() {
     this.chooseFromAlbum(1, 400, 400).then(
-      path => {
-        console.warn('chooseFromAlbum ImgPath: ' + path);
+      paths => {
+        console.warn('chooseFromAlbum ImgPath: ' + JSON.stringify(paths));
 
-        this.file.readAsArrayBuffer(path, name)
-        .then(arrayBuf => {
-          console.warn('readAsArrayBuffer: ' + arrayBuf);
-        }).catch(error => {
-          console.log("readAsArrayBuffer catch:", error);
+        let path:string = paths[0];
+        let index:number = path.lastIndexOf('/');
+        let dir:string = path.substring(0, index);
+        let name:string = path.substr(index+1);
+
+        console.warn(`dir:${dir} name:${name}`);
+
+        // this.file.readAsArrayBuffer(dir, name)
+        // .then(arrayBuf => {
+        //   console.warn('readAsArrayBuffer: ' + arrayBuf);
+        // }).catch(error => {
+        //   console.log("readAsArrayBuffer catch:", error);
+        // });
+
+        this.file.readAsDataURL(dir, name)
+        .then(val=>{
+          console.warn('readAsDataURL: ' + val);
+        },
+        reason=>{
+          console.error('readAsDataURL reject: ' + reason);
+        })
+        .catch(reason=>{
+          console.error('readAsDataURL catch: ' + reason);
         });
+
+      
       })
       .catch(reason=>{
         console.warn('chooseFromAlbum catch: ' + reason);
